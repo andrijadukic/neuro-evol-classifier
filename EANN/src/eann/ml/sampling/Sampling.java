@@ -3,8 +3,6 @@ package eann.ml.sampling;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.AbstractList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -33,39 +31,5 @@ public final class Sampling {
 
     public static <T> List<T> load(String path, Function<String, T> parser) throws IOException {
         return Files.lines(Path.of(path)).map(parser).collect(Collectors.toUnmodifiableList());
-    }
-
-    public static <T> List<List<T>> singletons(List<T> samples) {
-        return new AbstractList<>() {
-            @Override
-            public List<T> get(int index) {
-                return Collections.singletonList(samples.get(index));
-            }
-
-            @Override
-            public int size() {
-                return samples.size();
-            }
-        };
-    }
-
-    public static <T> List<List<T>> partition(List<T> samples, int partitionSize) {
-        return new AbstractList<>() {
-
-            private final int sampleSize = samples.size();
-            private final int numberOfPartitions = Math.toIntExact(Math.round(Math.ceil((double) sampleSize / partitionSize)));
-
-            @Override
-            public List<T> get(int index) {
-                final int start = index * partitionSize;
-                final int end = Math.min(start + partitionSize, sampleSize);
-                return samples.subList(start, end);
-            }
-
-            @Override
-            public int size() {
-                return numberOfPartitions;
-            }
-        };
     }
 }
